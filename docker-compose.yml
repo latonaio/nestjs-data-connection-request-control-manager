@@ -1,0 +1,21 @@
+version: "3"
+services:
+  sample-msyql:
+    image : mysql:latest
+    container_name: test-msyql
+    ports:
+      - "3306:3306"
+    volumes:
+      # dbのデータをlocalに保存する
+      - ./db/mysql:/var/lib/mysql
+      - ./config.cnf:/etc/mysql/conf.d/config.cnf
+      - ./:/app/src
+    command: mysqld --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    working_dir: /app/src
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: test
+      MYSQL_USER: test
+      MYSQL_PASSWORD: test1234
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+
