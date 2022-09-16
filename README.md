@@ -1,5 +1,5 @@
-# data-connection-request-control-manager
-NestJS を用いたREST API 開発のためのスクリプトです。
+# nestjs-data-connection-request-control-manager
+NestJS を用いた データ連携のための API サーバー(REST) 開発のためのスクリプトです。
 
 ## 動作確認済み環境
 - Node.js 18.8.0
