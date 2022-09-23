@@ -37,3 +37,35 @@ npx prisma migrate dev --name init
 ```sh
 npx prisma studio
 ```
+
+## テスト
+### ユーザー情報の登録
+```
+http://34.209.222.142:30000/user/register
+```
+```
+{
+  "login_id": "Sample_user",
+  "password": "OK_password"
+}
+```
+
+### ログイン（JWT の取得）
+
+```
+http://XX.XXX.XXX.XXX:30000/user/login
+```
+```
+{
+  "login_id": "Sample_user",
+  "password": "OK_password"
+}
+```
+
+### レスポンス
+
+```
+{
+  "jwt": string
+}
+```
