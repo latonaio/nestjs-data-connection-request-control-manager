@@ -34,16 +34,6 @@ export class AppController {
     return this.appService.loginUser(loginId, password);
   }
 
-  @Get('odata/:api_service_name/:api_type')
-  async odata(
-    @Body('api_service_name') aPIServiceName: string,
-    @Body('api_type') aPIType: string,
-    @Request() req,
-  ): Promise<Object> {
-    const jwtToken = req.headers.authorization.replace('Bearer ', '');
-    return await this.appService.odata(aPIServiceName, aPIType, jwtToken);
-  }
-
   @Get('test')
   async test(
   ): Promise<Object> {

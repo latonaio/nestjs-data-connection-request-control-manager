@@ -4,10 +4,12 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { HttpModule } from '@nestjs/axios';
 import { ConfigModule } from '@nestjs/config';
+import { OdataService } from './odata/odata.service';
+import { OdataController } from './odata/odata.controller';
 
 @Module({
   imports: [PrismaModule, HttpModule, ConfigModule.forRoot()],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [AppController, OdataController],
+  providers: [AppService, OdataService],
 })
 export class AppModule {}

@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
+// import * as uuid from 'uuid';
 
 @Injectable()
 export class AppService {
@@ -60,38 +61,11 @@ export class AppService {
   }
 
   async test(): Promise<Object> {
+    // console.log(uuid.v4());
     console.log(process.env.AUTHENTICATOR_HOST)
 
     return {
       test: 'success'
-    }
-  }
-
-  private async verifyToken(jwtToken: string): Promise<{ loginId: String}> {
-    const url = `http://${process.env.AUTHENTICATOR_HOST}:${process.env.AUTHENTICATOR_PORT}/token/verify`;
-    const result: any = await firstValueFrom(this.httpService.post(
-      url,
-      {},
-      {headers: { 'Authorization': `Bearer ${jwtToken}` }},
-    ));
-
-    console.log(result.request.res.statusCode);
-    console.log(result.data);
-
-    return {
-      loginId: 'etsts'
-    }
-  }
-
-  async odata(
-    aPIServiceName: string,
-    aPIType: string,
-    jwtToken: string,
-  ): Promise<Object> {
-    await this.verifyToken(jwtToken);
-
-    return {
-      result: 'success'
     }
   }
 }

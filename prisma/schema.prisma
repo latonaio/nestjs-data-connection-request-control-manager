@@ -27,16 +27,15 @@ model Users {
   deleted_at    DateTime
 }
 
-// CREATE TABLE `Users` (
-//   `id` int AUTO_INCREMENT,
-//   `login_id` varchar(20) NOT NULL DEFAULT '',
-//   `password` varchar(70) NOT NULL DEFAULT '',
-//   `qos` varchar(20) NOT NULL DEFAULT 'default',
-//   `is_encrypt` BOOLEAN NOT NULL DEFAULT TRUE,
-//   `last_login_at` datetime DEFAULT NULL,
-//   `created_at` datetime DEFAULT NULL,
-//   `updated_at` datetime DEFAULT NULL,
-//   `deleted_at` datetime DEFAULT NULL,
-//   UNIQUE KEY (`login_id`),
-//   PRIMARY KEY (`id`)
-// ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+model data_platform_api_request_to_rmq_mapper {
+  APIServiceName String
+  APIType String
+  RepositoryName String
+  PortNoInRabbitMQ Int
+  NameOfQueue String
+
+  @@id([APIServiceName, APIType])
+}
+
+
+
