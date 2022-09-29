@@ -17,11 +17,12 @@ export class OdataService {
     aPIType: string,
     jwtToken: string,
     sequenceId: string,
+    bodyParams: Object,
   ): Promise<Object> {
     await this.verifyToken(jwtToken);
 
     const queueName = await this.getQueueName(aPIServiceName, aPIType);
-    await this.send(sequenceId, queueName);
+    await this.send(sequenceId, queueName, bodyParams);
     await this.consume(sequenceId);
 
     return {
@@ -42,7 +43,7 @@ export class OdataService {
     return result.NameOfQueue;
   }
 
-  private async send(sequenceId: string, rmqName: string) {
+  private async send(sequenceId: string, rmqName: string, bodyParams: Object) {
     const rmqVhost = process.env.RMQ_VHOST;
     const rmpPort = process.env.RMQ_PORT;
     const rmqAddress = process.env.RMQ_ADDRESS;
@@ -59,11 +60,7 @@ export class OdataService {
       return channel.sendToQueue(queue, msg)
     }
 
-    const msg = {
-      sequenceId,
-      message: {},
-      date: new Date().getTime()
-    };
+    const msg = { sequenceId, ...bodyParams };
 
     await send(rmqName, Buffer.from(JSON.stringify(msg)));
   }
