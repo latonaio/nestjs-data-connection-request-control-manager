@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { firstValueFrom } from 'rxjs';
 import { HttpService } from '@nestjs/axios';
 import * as amqplib from 'amqplib';
@@ -88,6 +88,12 @@ export class OdataService {
             return resolve(queueData)
           }
         });
+
+        setTimeout(() => {
+          return reject({
+            result: 'error'
+          })
+        }, 10 * 1000);
       } catch (e) {
         console.log(e);
         return reject(e);
@@ -112,3 +118,4 @@ export class OdataService {
     }
   }
 }
+

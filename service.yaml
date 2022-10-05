@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    run: nestjs-data-connection-request-control-manager
+  name: nestjs-data-connection-request-control-manager
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: nestjs-data-connection-request-control-manager
+  strategy:
+    rollingUpdate:
+  template:
+    metadata:
+      labels:
+        run: nestjs-data-connection-request-control-manager
+    spec:
+      nodeName: worker
+      hostname: nestjs-data-connection-request-control-manager
+      containers:
+        - name: nestjs-data-connection-request-control-manager
+          image: latonaio/nestjs-data-connection-request-control-manager:latest
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: "MYSQL_USER"
+              value: "XXXXXXXXXXX"
+            - name: "MYSQL_PASSWORD"
+              value: "XXXXXXXXXXX"
+            - name: "MYSQL_DB"
+              value: "DataPlatformCommonSettingsMysqlKube"
+            - name: "MYSQL_PORT"
+              value: "3306"
+            - name: "MYSQL_HOST"
+              value: "data-platform-common-settings-mysql-kube"
+            - name: "DRIVER"
+              value: "mysql"
+            - name: "DATABASE_URL"
+              value: "XXXXXXXXXXX"
+            - name: "AUTHENTICATOR_HOST"
+              value: "XXXXXXXXXXX"
+            - name: "AUTHENTICATOR_PORT"
+              value: "30020"
+            - name: "RMQ_USER"
+              value: "XXXXXXXXXXX"
+            - name: "RMQ_PASS"
+              value: "XXXXXXXXXXX"
+            - name: "RMQ_ADDRESS"
+              value: "rabbitmq"
+            - name: "RMQ_PORT"
+              value: "5672"
+            - name: "RMQ_QUEUE_CONSUME"
+              value: "nestjs-data-connection-request-control-manager-consume"
+            - name: "RMQ_VHOST"
+              value: "sap"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    run: nestjs-data-connection-request-control-manager
+  name: nestjs-data-connection-request-control-manager
+spec:
+  selector:
+    run: nestjs-data-connection-request-control-manager
+  type: NodePort
+  ports:
+    - port: 3000
+      protocol: TCP
+      targetPort: 3000
+      nodePort: 30000
+---
+
