@@ -1,8 +1,9 @@
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus, InternalServerErrorException } from '@nestjs/common';
 import { firstValueFrom } from 'rxjs';
 import { HttpService } from '@nestjs/axios';
 import * as amqplib from 'amqplib';
-import { PrismaService } from '../prisma/prisma.service';
+import { PrismaService } from '../../prisma/prisma.service';
+import { RuntimeSessionException } from '@shared/filters/runtime-session-exception.filter';
 
 @Injectable()
 export class OdataService {
@@ -12,21 +13,26 @@ export class OdataService {
   ) {
   }
 
-  async getOdata(
+  async execute(
     aPIServiceName: string,
     aPIType: string,
     jwtToken: string,
-    sequenceId: string,
+    runtimeSessionId: string,
     bodyParams: Object,
   ): Promise<Object> {
     await this.verifyToken(jwtToken);
 
     const queueName = await this.getQueueName(aPIServiceName, aPIType);
-    await this.send(sequenceId, queueName, bodyParams);
-    await this.consume(sequenceId);
+    await this.send(runtimeSessionId, queueName, bodyParams);
+    await this.consume(runtimeSessionId);
 
     return {
-      result: 'success'
+      statusCode: 200,
+      message: 'Executed successfully',
+      data: {
+        runtimeSessionId,
+        queueName,
+      }
     }
   }
 
@@ -43,7 +49,7 @@ export class OdataService {
     return result.NameOfQueue;
   }
 
-  private async send(sequenceId: string, rmqName: string, bodyParams: Object) {
+  private async send(runtimeSessionId: string, rmqName: string, bodyParams: Object) {
     const rmqVhost = process.env.RMQ_VHOST;
     const rmpPort = process.env.RMQ_PORT;
     const rmqAddress = process.env.RMQ_ADDRESS;
@@ -60,44 +66,38 @@ export class OdataService {
       return channel.sendToQueue(queue, msg)
     }
 
-    const msg = { sequenceId, ...bodyParams };
+    const msg = { runtime_session_id: runtimeSessionId, ...bodyParams };
 
     await send(rmqName, Buffer.from(JSON.stringify(msg)));
   }
 
-  private async consume(sequenceId: string) {
+  private async consume(runtimeSessionId: string) {
     return new Promise(async (resolve, reject) => {
-      try {
-        const rmqName = process.env.RMQ_QUEUE_CONSUME;
-        const rmqVhost = process.env.RMQ_VHOST;
-        const rmpPort = process.env.RMQ_PORT;
-        const rmqAddress = process.env.RMQ_ADDRESS;
-        const rmqUser = process.env.RMQ_USER;
-        const rmqPass = process.env.RMQ_PASS;
+      const rmqName = process.env.RMQ_QUEUE_CONSUME;
+      const rmqVhost = process.env.RMQ_VHOST;
+      const rmpPort = process.env.RMQ_PORT;
+      const rmqAddress = process.env.RMQ_ADDRESS;
+      const rmqUser = process.env.RMQ_USER;
+      const rmqPass = process.env.RMQ_PASS;
 
-        const url = `amqp://${rmqUser}:${rmqPass}@${rmqAddress}:${rmpPort}/${rmqVhost}`;
+      const url = `amqp://${rmqUser}:${rmqPass}@${rmqAddress}:${rmpPort}/${rmqVhost}`;
 
-        const connection = await amqplib.connect(url);
-        const channel = await connection.createChannel();
+      const connection = await amqplib.connect(url);
+      const channel = await connection.createChannel();
 
-        await channel.consume(rmqName, async (queueData: any) => {
-          const parsedMessage = JSON.parse(queueData.content.toString());
-          if (parsedMessage.sequenceId === sequenceId) {
-            console.log(`received sequenceId: ${sequenceId}`);
-            channel.ack(queueData);
-            return resolve(queueData)
-          }
-        });
+      await channel.consume(rmqName, async (queueData: any) => {
+        const parsedMessage = JSON.parse(queueData.content.toString());
+        if (parsedMessage.runtimeSessionId === runtimeSessionId) {
+          channel.ack(queueData);
+          return resolve(queueData)
+        }
+      });
 
-        setTimeout(() => {
-          return reject({
-            result: 'error'
-          })
-        }, 10 * 1000);
-      } catch (e) {
-        console.log(e);
-        return reject(e);
-      }
+      setTimeout(() => {
+        return reject(
+          new RuntimeSessionException(`Request timeout`, { runtimeSessionId })
+        );
+      }, 10 * 1000);
     });
   }
 
@@ -106,11 +106,8 @@ export class OdataService {
     const result: any = await firstValueFrom(this.httpService.post(
       url,
       {},
-      {headers: { 'Authorization': `Bearer ${jwtToken}` }},
+      { headers: { 'Authorization': `Bearer ${jwtToken}` } },
     ));
-
-    console.log(result.request.res.statusCode);
-    console.log(result.data);
 
     return {
       status: String(result.request.res.statusCode),
@@ -118,4 +115,3 @@ export class OdataService {
     }
   }
 }
-

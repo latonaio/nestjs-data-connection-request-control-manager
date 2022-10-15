@@ -41,7 +41,7 @@ npx prisma studio
 ## テスト
 ### ユーザー情報の登録
 ```
-http://34.209.222.142:30000/user/register
+http://XX.XXX.XXX.XXX:30000/user/register
 ```
 ```
 {

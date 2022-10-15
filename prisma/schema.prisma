@@ -3,16 +3,11 @@
 
 datasource db {
   provider = "mysql"
-  url      = env("DATABASE_URL")
+  url      = env("NESTJS_DATA_PLATFORM_COMMON_SETTINGS_MYSQL_KUBE_URL")
 }
 
 generator client {
   provider = "prisma-client-js"
-}
-
-model Food {
-  id   Int    @id @default(autoincrement())
-  name String
 }
 
 model Users {

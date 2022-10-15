@@ -20,39 +20,16 @@ spec:
       hostname: nestjs-data-connection-request-control-manager
       containers:
         - name: nestjs-data-connection-request-control-manager
-          image: latonaio/nestjs-data-connection-request-control-manager:latest
-          imagePullPolicy: IfNotPresent
+          image: public.ecr.aws/j8z8p5m3/nestjs-data-connection-request-control-manager:latest
+          imagePullPolicy: Always
           env:
-            - name: "MYSQL_USER"
-              value: "XXXXXXXXXXX"
-            - name: "MYSQL_PASSWORD"
-              value: "XXXXXXXXXXX"
-            - name: "MYSQL_DB"
-              value: "DataPlatformCommonSettingsMysqlKube"
-            - name: "MYSQL_PORT"
-              value: "3306"
-            - name: "MYSQL_HOST"
-              value: "data-platform-common-settings-mysql-kube"
-            - name: "DRIVER"
-              value: "mysql"
-            - name: "DATABASE_URL"
-              value: "XXXXXXXXXXX"
-            - name: "AUTHENTICATOR_HOST"
-              value: "XXXXXXXXXXX"
-            - name: "AUTHENTICATOR_PORT"
-              value: "30020"
-            - name: "RMQ_USER"
-              value: "XXXXXXXXXXX"
-            - name: "RMQ_PASS"
-              value: "XXXXXXXXXXX"
-            - name: "RMQ_ADDRESS"
-              value: "rabbitmq"
-            - name: "RMQ_PORT"
-              value: "5672"
             - name: "RMQ_QUEUE_CONSUME"
               value: "nestjs-data-connection-request-control-manager-consume"
-            - name: "RMQ_VHOST"
-              value: "sap"
+            - name: "APPLICATION_PORT"
+              value: "3000"
+          envFrom:
+            - configMapRef:
+                name: env-config
 ---
 apiVersion: v1
 kind: Service
@@ -70,4 +47,3 @@ spec:
       targetPort: 3000
       nodePort: 30000
 ---
-
