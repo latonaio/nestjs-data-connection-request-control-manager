@@ -19,7 +19,9 @@ export class OdataController {
   ): Promise<Object> {
     const runtimeSessionId = uuidv4();
     this.logger.info(`Issuance of runtime session ID`, {
-      runtimeSessionId
+      runtimeSessionId,
+      aPIServiceName,
+      aPIType,
     });
 
     const jwtToken = req.headers.authorization.replace('Bearer ', '');

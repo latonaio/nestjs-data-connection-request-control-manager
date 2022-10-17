@@ -1,15 +1,18 @@
-import { Injectable, HttpException, HttpStatus, InternalServerErrorException } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus, InternalServerErrorException, Inject } from '@nestjs/common';
 import { firstValueFrom } from 'rxjs';
 import { HttpService } from '@nestjs/axios';
 import * as amqplib from 'amqplib';
 import { PrismaService } from '../../prisma/prisma.service';
 import { RuntimeSessionException } from '@shared/filters/runtime-session-exception.filter';
+import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
+import { Logger } from 'winston';
 
 @Injectable()
 export class OdataService {
   constructor(
     private readonly httpService: HttpService,
-    private readonly prismaService: PrismaService
+    private readonly prismaService: PrismaService,
+    @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
   ) {
   }
 
@@ -23,6 +26,11 @@ export class OdataService {
     await this.verifyToken(jwtToken);
 
     const queueName = await this.getQueueName(aPIServiceName, aPIType);
+
+    this.logger.debug(`Got Queue Name`, {
+      queueName,
+    });
+
     await this.send(runtimeSessionId, queueName, bodyParams);
     await this.consume(runtimeSessionId);
 
@@ -68,7 +76,17 @@ export class OdataService {
 
     const msg = { runtime_session_id: runtimeSessionId, ...bodyParams };
 
+    this.logger.info(`Send Queue Data`, {
+      runtimeSessionId,
+      rmqName,
+    });
+
     await send(rmqName, Buffer.from(JSON.stringify(msg)));
+
+    this.logger.info(`Sent Queue Data`, {
+      runtimeSessionId,
+      rmqName,
+    });
   }
 
   private async consume(runtimeSessionId: string) {
@@ -87,6 +105,11 @@ export class OdataService {
 
       await channel.consume(rmqName, async (queueData: any) => {
         const parsedMessage = JSON.parse(queueData.content.toString());
+
+        this.logger.debug(`Got Queue Name`, {
+          runtimeSessionId,
+        });
+
         if (parsedMessage.runtimeSessionId === runtimeSessionId) {
           channel.ack(queueData);
           return resolve(queueData)
