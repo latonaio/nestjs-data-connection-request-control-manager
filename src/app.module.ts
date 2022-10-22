@@ -10,11 +10,14 @@ import { OdataModule } from './api/odata/odata.module';
 import { UserController } from './api/user/user.controller';
 import { UserService } from './api/user/user.service';
 import { UserModule } from './api/user/user.module';
+import { OrderController } from './api/order/order.controller';
+import { OrderService } from './api/order/order.service';
+import { OrderModule } from './api/order/order.module';
 
 @Module({
-  imports: [PrismaModule, HttpModule, ConfigModule, OdataModule, UserModule],
-  controllers: [AppController, OdataController, UserController],
-  providers: [AppService, OdataService, UserService],
+  imports: [PrismaModule, HttpModule, ConfigModule, OdataModule, UserModule, OrderModule],
+  controllers: [AppController, OdataController, UserController, OrderController],
+  providers: [AppService, OdataService, UserService, OrderService],
 })
 export class AppModule {
 }
