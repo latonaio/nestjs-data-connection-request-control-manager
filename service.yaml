@@ -20,7 +20,8 @@ spec:
       hostname: nestjs-data-connection-request-control-manager
       containers:
         - name: nestjs-data-connection-request-control-manager
-          image: public.ecr.aws/j8z8p5m3/nestjs-data-connection-request-control-manager:latest
+          image: latonaio/nestjs-data-connection-request-control-manager:latest
+#          image: public.ecr.aws/j8z8p5m3/nestjs-data-connection-request-control-manager:latest
           imagePullPolicy: Always
           env:
             - name: "RMQ_QUEUE_CONSUME"
@@ -30,6 +31,8 @@ spec:
           envFrom:
             - configMapRef:
                 name: env-config
+            - secretRef:
+                name: env-secret
 ---
 apiVersion: v1
 kind: Service

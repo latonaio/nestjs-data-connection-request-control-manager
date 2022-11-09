@@ -5,16 +5,21 @@ import {
   WinstonModuleOptionsFactory,
   WinstonModuleOptions,
 } from 'nest-winston';
+import { LogLevel } from '@shared/enums/log-level';
+import * as moment from 'moment';
+import 'moment-timezone';
 
 const { json, timestamp, combine, colorize, printf, simple } = winston.format;
 
 @Injectable()
 export class WinstonConfigService implements WinstonModuleOptionsFactory {
   createWinstonModuleOptions(): WinstonModuleOptions {
+    const timeZone = process.env.TIME_ZONE || 'Asia/Tokyo';
+
     return {
-      transports: [new winston.transports.Console()],
+      transports: [new winston.transports.Console({ level: LogLevel['Debug'] })],
       format: combine(
-        timestamp(),
+        timestamp({ format: moment().tz(timeZone).format() }),
         colorize(),
         json(),
         simple(),

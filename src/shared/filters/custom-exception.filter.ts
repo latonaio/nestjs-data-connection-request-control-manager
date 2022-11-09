@@ -6,6 +6,8 @@ import {
 import { Response } from 'express';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { Logger } from 'winston';
+import { AxiosError } from 'axios';
+import { BadRequestException } from '@nestjs/common';
 
 @Catch(Error)
 export class CustomExceptionFilter implements ExceptionFilter {
@@ -20,10 +22,52 @@ export class CustomExceptionFilter implements ExceptionFilter {
 
     this.logger.error(`${ message }`, JSON.stringify({ name, message, ...data }));
 
-    response.status(statusCode).json({
+    if (this.isAxiosError(exception)) {
+      const name = 'http request exception';
+      const statusCode = exception.response?.status || 500;
+      const message = exception.response?.data?.message || 'Internal Server Error';
+
+      return response.status(statusCode).json({
+        statusCode,
+        name,
+        message,
+        data: data,
+      });
+    }
+
+    if (exception instanceof BadRequestException) {
+      const name = 'Request validation exception';
+      const statusCode = 400;
+      const badRequestException = exception.getResponse() as any;
+      const errors = badRequestException.message.map((error: any) => {
+        return error.constraints
+      })
+
+      return response.status(statusCode).json({
+        statusCode,
+        name,
+        message,
+        errors,
+      });
+    }
+
+    if (!statusCode) {
+      const name = 'unknown exception';
+      const statusCode = 500;
+      const message = 'Internal Server Error';
+
+      return response.status(statusCode).json({
+        statusCode,
+        name,
+        message,
+        data: data,
+      });
+    }
+
+    return response.status(statusCode).json({
       statusCode,
       name,
-      message: message,
+      message,
       data: data,
     });
   }
@@ -31,5 +75,9 @@ export class CustomExceptionFilter implements ExceptionFilter {
   private extractExceptionData(exception: Error) {
     const { statusCode, name, message, data } = exception as any;
     return { statusCode, name, message, data };
+  }
+
+  private isAxiosError(error: any): error is AxiosError {
+    return (error as AxiosError).isAxiosError !== undefined;
   }
 }

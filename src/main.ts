@@ -1,9 +1,11 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
-import { Logger } from '@nestjs/common';
+import { Logger, ValidationPipe ,BadRequestException } from '@nestjs/common';
 import { CustomExceptionFilter } from '@shared/filters/custom-exception.filter';
 import * as bodyParser from 'body-parser';
+import { ValidationError } from 'class-validator';
+import { TransformationInterceptor } from '@shared/interceptors/transform.interceptor';
 
 const port = process.env.APPLICATION_PORT;
 
@@ -12,6 +14,13 @@ async function bootstrap() {
 
   app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER));
   app.useGlobalFilters(new CustomExceptionFilter(app.get(WINSTON_MODULE_NEST_PROVIDER)));
+  app.useGlobalPipes(new ValidationPipe({
+    exceptionFactory: (validationErrors: ValidationError[] = []) => {
+      return new BadRequestException(validationErrors);
+    },
+    transform: true,
+  }));
+  app.useGlobalInterceptors(new TransformationInterceptor())
   app.use(bodyParser.json({ limit: '50mb' }));
   app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
   await app.listen(port);

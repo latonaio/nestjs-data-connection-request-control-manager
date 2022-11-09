@@ -1,7 +1,12 @@
 import { Body, Controller, Post, Put } from '@nestjs/common';
 import { UserService } from './user.service';
+import {
+  RegisterUserPost,
+  UpdateUserPost,
+  LoginUserPost,
+} from './dtos';
 
-@Controller('user')
+@Controller()
 export class UserController {
   constructor(
     private readonly userService: UserService,
@@ -9,26 +14,22 @@ export class UserController {
 
   @Post('register')
   async register(
-    @Body('login_id') loginId: string,
-    @Body('password') password: string
+    @Body() { loginId, password, businessPartner }: RegisterUserPost,
   ): Promise<Object> {
-    return this.userService.registerUser(loginId, password);
+    return this.userService.registerUser(loginId, password, businessPartner);
   }
 
   @Put('update')
   async update(
-    @Body('login_id') loginId: string,
-    @Body('old_password') oldPassword: string,
-    @Body('password') password: string
+    @Body() { loginId, oldPassword, password, businessPartner }: UpdateUserPost,
   ): Promise<Object> {
-    return this.userService.updateUser(loginId, oldPassword, password);
+    return this.userService.updateUser(loginId, oldPassword, password, businessPartner);
   }
 
   @Post('login')
   async login(
-    @Body('login_id') loginId: string,
-    @Body('password') password: string
+    @Body() { loginId, password, businessPartner }: LoginUserPost,
   ): Promise<Object> {
-    return this.userService.loginUser(loginId, password);
+    return this.userService.loginUser(loginId, password, businessPartner);
   }
 }

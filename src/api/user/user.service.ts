@@ -1,73 +1,57 @@
 import { Injectable } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class UserService {
   constructor(
     private readonly httpService: HttpService,
-  ) {
-  }
+    private readonly configService: ConfigService,
+  ) {}
 
-  async registerUser(loginId: string, password: string): Promise<Object> {
-    const url = `http://${process.env.AUTHENTICATOR_HOST}:${process.env.AUTHENTICATOR_PORT}/users`;
-
+  async registerUser(loginId: string, password: string, businessPartner: number): Promise<Object> {
+    const { url } = this.configService.get('authenticator');
     await firstValueFrom(this.httpService.post(
-      url,
+      `${url}/users`,
       {
         login_id: loginId,
-        password: password,
+        password,
+        business_partner: businessPartner,
       }
     ));
 
-    return {
-      statusCode: 200,
-      message: 'Created user successfully',
-      data: {
-        loginId,
-      }
-    }
+    return { message: 'Created user successfully', data: { loginId } };
   }
 
-  async updateUser(loginId: string, oldPassword: string, password: string): Promise<Object> {
-    const url = `http://${process.env.AUTHENTICATOR_HOST}:${process.env.AUTHENTICATOR_PORT}/users/login_id/${loginId}`;
+  async updateUser(loginId: string, oldPassword: string, password: string, businessPartner: number): Promise<Object> {
+    const { url } = this.configService.get('authenticator');
     await firstValueFrom(this.httpService.put(
-      url,
+      `${url}/users/login_id/${loginId}`,
       {
         login_id: loginId,
         old_password: oldPassword,
         password: password,
+        business_partner: businessPartner
         // qos: "raw",
       }
     ));
 
-    return {
-      statusCode: 200,
-      message: 'Updated user successfully',
-      data: {
-        loginId,
-        oldPassword,
-        password
-      }
-    };
+    return { message: 'Updated user successfully', data: { loginId, oldPassword, password } };
   }
 
-  async loginUser(loginId: string, password: string): Promise<Object> {
-    const url = `http://${process.env.AUTHENTICATOR_HOST}:${process.env.AUTHENTICATOR_PORT}/login`;
+  async loginUser(loginId: string, password: string, businessPartner: number): Promise<Object> {
+    const { url } = this.configService.get('authenticator');
+
     const result: any = await firstValueFrom(this.httpService.post(
-      url,
+      `${url}/login`,
       {
         login_id: loginId,
-        password: password
+        password,
+        business_partner: businessPartner,
       }
     ));
 
-    return {
-      statusCode: 200,
-      message: 'Login is success',
-      data: {
-        jwt: result.data.jwt
-      }
-    };
+    return { message: 'Login is success', data: { jwt: result.data.jwt } };
   }
 }
