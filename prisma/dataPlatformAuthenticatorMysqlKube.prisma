@@ -1,0 +1,29 @@
+datasource db {
+  provider = "mysql"
+  url      = env("NESTJS_DATA_PLATFORM_AUTHENTICATOR_MYSQL_KUBE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/@prisma/generated/dataPlatformAuthenticatorMysqlKube"
+}
+
+model data_platform_authenticator_business_user_data {
+  EmailAddress String
+  BusinessPartner Int
+  BusinessPartnerName String
+  Password String
+  Qos String
+  IsEncrypt Int
+  LastLoginAt DateTime?
+  CreatedAt DateTime?
+  UpdatedAt DateTime?
+  DeletedAt DateTime?
+  BusinessUserFirstName String?
+  BusinessUserLastName String?
+  BusinessUserFullName String?
+  Language String?
+  NoticeTo Int?
+
+  @@id([EmailAddress])
+}

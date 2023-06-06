@@ -6,12 +6,14 @@ import { JwtAuthenticationException } from '@shared/filters/jwt-authentication-e
 import { HttpStatus } from '@nestjs/common';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { Logger } from 'winston';
+import { RedisService } from '@shared/services/redis/redis.service';
 
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
   constructor(
     private readonly httpService: HttpService,
     private readonly configService: ConfigService,
+    private readonly redisService: RedisService,
     @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
   ) {}
 
@@ -24,11 +26,20 @@ export class JwtAuthGuard implements CanActivate {
     const { url } = this.configService.get('authenticator');
 
     try {
+      if (await this.redisService.getTokenCacheSync(jwtToken)) {
+        return true;
+      }
+
       await firstValueFrom(this.httpService.post(
         `${url}/token/verify`,
         {},
         { headers: { 'Authorization': `Bearer ${jwtToken}` } },
       ));
+
+      await this.redisService.setTokenCacheSync(
+        jwtToken,
+        { token: jwtToken }
+      );
     } catch (e) {
       if (!e.request?.res?.statusCode) {
         throw e;

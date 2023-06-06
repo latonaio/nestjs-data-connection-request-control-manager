@@ -6,8 +6,10 @@ import { CustomExceptionFilter } from '@shared/filters/custom-exception.filter';
 import * as bodyParser from 'body-parser';
 import { ValidationError } from 'class-validator';
 import { TransformationInterceptor } from '@shared/interceptors/transform.interceptor';
+import * as configurations from '@config/configuration';
 
-const port = process.env.APPLICATION_PORT;
+const configuration = configurations.default();
+const port = configuration.application.port;
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -20,6 +22,7 @@ async function bootstrap() {
     },
     transform: true,
   }));
+  app.enableCors();
   app.useGlobalInterceptors(new TransformationInterceptor())
   app.use(bodyParser.json({ limit: '50mb' }));
   app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));

@@ -1,13 +1,15 @@
 import {
   ArgumentsHost,
   Catch,
-  ExceptionFilter, Inject,
+  ExceptionFilter,
+  Inject,
+  BadRequestException,
 } from '@nestjs/common';
 import { Response } from 'express';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { Logger } from 'winston';
 import { AxiosError } from 'axios';
-import { BadRequestException } from '@nestjs/common';
+import { ApiProcessingResultException } from '@shared/filters/api-processing-result-error.filter';
 
 @Catch(Error)
 export class CustomExceptionFilter implements ExceptionFilter {
@@ -48,6 +50,12 @@ export class CustomExceptionFilter implements ExceptionFilter {
         name,
         message,
         errors,
+      });
+    }
+
+    if (exception instanceof ApiProcessingResultException) {
+      return response.status(statusCode).json({
+        ...data,
       });
     }
 

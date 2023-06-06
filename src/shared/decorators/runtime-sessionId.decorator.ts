@@ -1,8 +1,8 @@
-import { createParamDecorator } from '@nestjs/common';
-import { v4 as uuidv4 } from 'uuid';
+import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 
-export const RuntimeSessionId: (...dataOrPipes: any[]) => ParameterDecorator = createParamDecorator(
-  () => {
-    return uuidv4();
-  },
-);
+export const RuntimeSessionId = createParamDecorator(
+  (data: unknown, ctx: ExecutionContext) => {
+    const req = ctx.switchToHttp().getRequest();
+    return req.headers['runtime-session-id'];
+  }
+)

@@ -1,0 +1,21 @@
+datasource db {
+  provider = "mysql"
+  url      = env("NESTJS_DATA_PLATFORM_COMMON_SETTINGS_MYSQL_KUBE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/@prisma/generated/dataPlatformCommonSettingsMysqlKube"
+}
+
+model data_platform_api_request_to_rabbitmq_queue_mapper {
+  APIServiceName String
+  ServiceLabel String
+  APIType String
+  RepositoryName String
+  PortNoInRabbitMQ Int
+  NameOfQueueFrom String
+
+  @@id([APIServiceName, APIType])
+}
+

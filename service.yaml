@@ -28,11 +28,59 @@ spec:
               value: "nestjs-data-connection-request-control-manager-consume"
             - name: "APPLICATION_PORT"
               value: "3000"
+            - name: "IMAGE_STORAGE_PATH"
+              value: "/images"
+            - name: "RMQ_QUEUE_CACHE"
+              value: "data-platform-api-request-reads-cache-manager-queue"
+            - name: "TRANSACTIONS_STORAGE_PATH"
+              value: "/inputs/orders/csv"
           envFrom:
             - configMapRef:
                 name: env-config
             - secretRef:
                 name: env-secret
+          volumeMounts:
+            - name: product-master-doc
+              mountPath: /images/doc
+            - name: barcode
+              mountPath: /images/barcode
+            - name: orders-csv
+              mountPath: /inputs/orders/csv
+            - name: orders-edi-csv
+              mountPath: /inputs/orders-edi-for-smes/csv
+            - name: orders-edi-for-voluntary-chain-smes
+              mountPath: /inputs/orders-edi-for-voluntary-chain-smes/csv
+            - name: delivery-document-csv
+              mountPath: /inputs/delivery-document/csv
+            - name: delivery-notice-edi-for-smes-csv
+              mountPath: /inputs/delivery-notice-edi-for-smes/csv
+            - name: delivery-notice-edi-for-voluntary-chain-smes
+              mountPath: /inputs/delivery-notice-edi-for-voluntary-chain-smes/csv
+      volumes:
+        - name: product-master-doc
+          hostPath:
+            path: /mnt/data-platform-api-product-master-doc-creates-rmq-kube
+        - name: barcode
+          hostPath:
+            path: /mnt/data-platform-api-barcode-generates
+        - name: orders-csv
+          hostPath:
+            path: /mnt/data-platform-api-orders-csv-converter-rmq-kube
+        - name: orders-edi-csv
+          hostPath:
+            path: /mnt/data-platform-api-orders-edi-for-smes-csv-converter-rmq-kube
+        - name: orders-edi-for-voluntary-chain-smes
+          hostPath:
+            path: /mnt/data-platform-api-orders-edi-for-voluntary-chain-smes-csv-converter-rmq-kube
+        - name: delivery-document-csv
+          hostPath:
+            path: /mnt/data-platform-api-delivery-document-csv-converter-rmq-kube
+        - name: delivery-notice-edi-for-smes-csv
+          hostPath:
+            path: /mnt/data-platform-api-delivery-notice-edi-for-smes-csv-converter-rmq-kube
+        - name: delivery-notice-edi-for-voluntary-chain-smes
+          hostPath:
+            path: /mnt/data-platform-api-delivery-notice-edi-for-voluntary-chain-smes-rmq-kube
 ---
 apiVersion: v1
 kind: Service

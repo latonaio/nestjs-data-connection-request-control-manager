@@ -1,0 +1,30 @@
+[
+  {
+    "host": "10.100.100.100",
+    "userName": "ubuntu",
+    "remoteDirectory": "/mnt/doc",
+    "mountPoint": "images/doc",
+    "IdentityFile": "~/.ssh/id_rsa"
+  },
+  {
+    "host": "10.100.100.100",
+    "userName": "ubuntu",
+    "remoteDirectory": "/mnt/barcode",
+    "mountPoint": "images/barcode",
+    "IdentityFile": "~/.ssh/id_rsa"
+  },
+  {
+    "host": "10.100.100.100",
+    "userName": "ubuntu",
+    "remoteDirectory": "/mnt/csv",
+    "mountPoint": "inputs/orders/csv",
+    "IdentityFile": "~/.ssh/id_rsa"
+  },
+  {
+    "host": "10.100.100.100",
+    "userName": "ubuntu",
+    "remoteDirectory": "/mnt/csv",
+    "mountPoint": "inputs/orders/edi/csv",
+    "IdentityFile": "~/.ssh/id_rsa"
+  }
+]
