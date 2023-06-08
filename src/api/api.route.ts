@@ -13,6 +13,8 @@ import { EquipmentRoute } from './equipment/equipment.route';
 import { PriceMasterRoute } from './price-master/price-master.route';
 import { BillOfMaterialRoute } from './bill-of-material/bill-of-material.route';
 import { OperationsRoute } from './operations/operations.route';
+import { SupplyChainRelationshipRoute } from './supply-chain-relationship/supply-chain-relationship.route';
+import { WorkCenterRoute } from './work-center/work-center.route';
 
 export const ApiRoutes: Routes = [
   {
@@ -30,6 +32,8 @@ export const ApiRoutes: Routes = [
       PriceMasterRoute,
       BillOfMaterialRoute,
       OperationsRoute,
+      SupplyChainRelationshipRoute,
+      WorkCenterRoute,
       AuthRoute,
       ApiModuleRuntimesRoute,
     ],

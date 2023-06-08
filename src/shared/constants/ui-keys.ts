@@ -9,6 +9,8 @@ enum keys {
   priceMaster = 'priceMaster',
   billOfMaterial = 'billOfMaterial',
   operations = 'operations',
+  supplyChainRelationship = 'supplyChainRelationship',
+  workCenter = 'workCenter',
 }
 
 const uiKeys = {
@@ -118,6 +120,18 @@ const uiKeys = {
     list: {
       key: `${keys.operations}/list`,
       function: 'OperationsList',
+    },
+  },
+  supplyChainRelationship: {
+    list: {
+      key: `${keys.supplyChainRelationship}/list`,
+      function: 'SupplyChainRelationshipList',
+    },
+  },
+  workCenter: {
+    list: {
+      key: `${keys.workCenter}/list`,
+      function: 'WorkCenterList',
     },
   },
 };

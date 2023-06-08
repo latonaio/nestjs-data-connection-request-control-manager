@@ -12,6 +12,8 @@ import { EquipmentModule } from './equipment/equipment.module';
 import { PriceMasterModule } from './price-master/price-master.module';
 import { BillOfMaterialModule } from './bill-of-material/bill-of-material.module';
 import { OperationsModule } from './operations/operations.module';
+import { SupplyChainRelationshipModule } from './supply-chain-relationship/supply-chain-relationship.module';
+import { WorkCenterModule } from './work-center/work-center.module';
 
 @Module({
   imports: [
@@ -28,6 +30,8 @@ import { OperationsModule } from './operations/operations.module';
     PriceMasterModule,
     BillOfMaterialModule,
     OperationsModule,
+    SupplyChainRelationshipModule,
+    WorkCenterModule,
   ],
 })
 export class ApiModule {}

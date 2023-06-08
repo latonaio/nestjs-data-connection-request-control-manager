@@ -9,3 +9,5 @@ export * from './equipment';
 export * from './price-master';
 export * from './bill-of-material';
 export * from './operations';
+export * from './supply-chain-relationship';
+export * from './work-center';
