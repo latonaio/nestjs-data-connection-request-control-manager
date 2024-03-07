@@ -5,6 +5,7 @@ import { ConfigModule as NestConfigModule } from '@nestjs/config/dist/config.mod
 import configuration from '@config/configuration';
 import { BillOfMaterialController } from './bill-of-material.controller';
 import { HttpModule } from '@nestjs/axios';
+import { DetailModule } from './detail/detail.module';
 import { RedisModule } from '@shared/services/redis/redis.module';
 import { RabbitmqModule } from '@shared/services/rabbitmq/rabbitmq.module';
 import { PrismaModule } from '@shared/services/prisma/prisma.module';
@@ -19,6 +20,7 @@ import { PrismaModule } from '@shared/services/prisma/prisma.module';
     NestConfigModule.forRoot({
       load: [configuration],
     }),
+    DetailModule,
   ],
   controllers: [BillOfMaterialController],
   providers: [BillOfMaterialService],

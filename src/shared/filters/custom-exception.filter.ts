@@ -41,7 +41,7 @@ export class CustomExceptionFilter implements ExceptionFilter {
       const name = 'Request validation exception';
       const statusCode = 400;
       const badRequestException = exception.getResponse() as any;
-      const errors = badRequestException.message.map((error: any) => {
+      const errors = badRequestException?.message?.map((error: any) => {
         return error.constraints
       })
 

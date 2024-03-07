@@ -1,10 +1,15 @@
+import { ProductImage } from '@shared/interfaces';
+
 interface SupplyChainRelationshipListItem {
-  InvoiceDocument: number;
-  BillToParty: string;
-  BillFromParty: string;
-  InvoiceDocumentDate: string;
-  PaymentDueDate: string;
-  HeaderBillingIsConfirmed: boolean;
+  SupplyChainRelationshipID: number;
+  Buyer: number;
+  BuyerName: string;
+  Seller: number;
+  SellerName: string;
+  Images: {
+    Product: ProductImage;
+  };
+  IsMarkedForDeletion: boolean;
 }
 
 class SupplyChainRelationshipList {
@@ -13,4 +18,5 @@ class SupplyChainRelationshipList {
 
 export {
   SupplyChainRelationshipList,
+  SupplyChainRelationshipListItem,
 }

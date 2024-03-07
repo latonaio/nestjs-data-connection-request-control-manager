@@ -6,10 +6,12 @@ interface BillOfMaterialListItem {
   Product: string;
   BillOfMaterial: number;
   ProductDescription: string;
-  OwnerPlant: string;
+  OwnerProductionPlant: string;
+  OwnerProductionPlantName: string;
+  ValidityStartDate: string;
   IsMarkedForDeletion: boolean;
   Images: {
-    BillOfMaterial: BillOfMaterialImage;
+    Product: BillOfMaterialImage;
   };
 }
 

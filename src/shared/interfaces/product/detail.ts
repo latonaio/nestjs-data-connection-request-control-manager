@@ -6,11 +6,6 @@ interface ProductDetailExconfListItem {
   Param: unknown[];
 }
 
-interface productDetailExconfList {
-  Product: string;
-  Existences: ProductDetailExconfListItem[];
-}
-
 class ProductDetailExconfList {
   productDetailExconfListHeader: ProductItem;
   productDetailExconfList: {

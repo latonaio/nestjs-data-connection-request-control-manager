@@ -1,3 +1,3 @@
 export enum UserTypes {
-  OwnerBusinessPartner = 'OwnerBusinessPartner',
+  OwnerProductionPlantBusinessPartner = 'OwnerProductionPlantBusinessPartner',
 }

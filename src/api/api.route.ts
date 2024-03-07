@@ -15,6 +15,7 @@ import { BillOfMaterialRoute } from './bill-of-material/bill-of-material.route';
 import { OperationsRoute } from './operations/operations.route';
 import { SupplyChainRelationshipRoute } from './supply-chain-relationship/supply-chain-relationship.route';
 import { WorkCenterRoute } from './work-center/work-center.route';
+import { ProductionVersionRoute } from './production-version/production-version.route';
 
 export const ApiRoutes: Routes = [
   {
@@ -34,6 +35,7 @@ export const ApiRoutes: Routes = [
       OperationsRoute,
       SupplyChainRelationshipRoute,
       WorkCenterRoute,
+      ProductionVersionRoute,
       AuthRoute,
       ApiModuleRuntimesRoute,
     ],

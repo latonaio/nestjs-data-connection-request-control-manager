@@ -8,6 +8,7 @@ import { HttpModule } from '@nestjs/axios';
 import { RedisModule } from '@shared/services/redis/redis.module';
 import { RabbitmqModule } from '@shared/services/rabbitmq/rabbitmq.module';
 import { PrismaModule } from '@shared/services/prisma/prisma.module';
+import { DetailModule } from './detail/detail.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { PrismaModule } from '@shared/services/prisma/prisma.module';
     NestConfigModule.forRoot({
       load: [configuration],
     }),
+    DetailModule,
   ],
   controllers: [OperationsController],
   providers: [OperationsService],

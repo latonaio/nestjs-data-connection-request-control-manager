@@ -14,6 +14,7 @@ import { BillOfMaterialModule } from './bill-of-material/bill-of-material.module
 import { OperationsModule } from './operations/operations.module';
 import { SupplyChainRelationshipModule } from './supply-chain-relationship/supply-chain-relationship.module';
 import { WorkCenterModule } from './work-center/work-center.module';
+import { ProductionVersionModule } from './production-version/production-version.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { WorkCenterModule } from './work-center/work-center.module';
     OperationsModule,
     SupplyChainRelationshipModule,
     WorkCenterModule,
+    ProductionVersionModule,
   ],
 })
 export class ApiModule {}

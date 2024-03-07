@@ -44,6 +44,8 @@ spec:
               mountPath: /images/doc
             - name: barcode
               mountPath: /images/barcode
+            - name: qr-code
+              mountPath: /images/qr-code
             - name: orders-csv
               mountPath: /inputs/orders/csv
             - name: orders-edi-csv
@@ -56,6 +58,14 @@ spec:
               mountPath: /inputs/delivery-notice-edi-for-smes/csv
             - name: delivery-notice-edi-for-voluntary-chain-smes
               mountPath: /inputs/delivery-notice-edi-for-voluntary-chain-smes/csv
+            - name: mill-sheet-pdf-generates
+              mountPath: /images/mill-sheet-pdf
+            - name: order-pdf-generates
+              mountPath: /images/order-pdf
+            - name: inspection-lot-mill-sheet-pdf-generates
+              mountPath: /images/inspection-lot-mill-sheet-pdf
+            - name: delivery-instruction-pdf-generates
+              mountPath: /images/delivery-instruction-pdf
       volumes:
         - name: product-master-doc
           hostPath:
@@ -63,6 +73,9 @@ spec:
         - name: barcode
           hostPath:
             path: /mnt/data-platform-api-barcode-generates
+        - name: qr-code
+          hostPath:
+            path: /mnt/data-platform-api-qr-code-generates
         - name: orders-csv
           hostPath:
             path: /mnt/data-platform-api-orders-csv-converter-rmq-kube
@@ -81,6 +94,18 @@ spec:
         - name: delivery-notice-edi-for-voluntary-chain-smes
           hostPath:
             path: /mnt/data-platform-api-delivery-notice-edi-for-voluntary-chain-smes-rmq-kube
+        - name: mill-sheet-pdf-generates
+          hostPath:
+            path: /mnt/data-platform-api-mill-sheet-pdf-generates-rmq-kube
+        - name: order-pdf-generates
+          hostPath:
+            path: /mnt/data-platform-api-order-pdf-generates-rmq-kube
+        - name: inspection-lot-mill-sheet-pdf-generates
+          hostPath:
+            path: /mnt/data-platform-api-inspection-lot-mill-sheet-pdf-generates-rmq-kube
+        - name: delivery-instruction-pdf-generates
+          hostPath:
+            path: /mnt/data-platform-api-delivery-instruction-pdf-generates-rmq-kube
 ---
 apiVersion: v1
 kind: Service

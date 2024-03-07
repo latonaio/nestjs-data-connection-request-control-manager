@@ -11,6 +11,7 @@ enum keys {
   operations = 'operations',
   supplyChainRelationship = 'supplyChainRelationship',
   workCenter = 'workCenter',
+  productionVersion = 'productionVersion',
 }
 
 const uiKeys = {
@@ -109,11 +110,19 @@ const uiKeys = {
       key: `${keys.priceMaster}/list`,
       function: 'PriceMasterList',
     },
+    detailList: {
+      key: `${keys.priceMaster}/detail/list`,
+      function: 'PriceMasterDetailList',
+    },
   },
   billOfMaterial: {
     list: {
       key: `${keys.billOfMaterial}/list`,
       function: 'BillOfMaterialList',
+    },
+    detailList: {
+      key: `${keys.billOfMaterial}/detail/list`,
+      function: 'BillOfMaterialDetailList',
     },
   },
   operations: {
@@ -121,17 +130,39 @@ const uiKeys = {
       key: `${keys.operations}/list`,
       function: 'OperationsList',
     },
+    detailList: {
+      key: `${keys.operations}/detail/list`,
+      function: 'OperationsDetailList',
+    },
   },
   supplyChainRelationship: {
     list: {
       key: `${keys.supplyChainRelationship}/list`,
       function: 'SupplyChainRelationshipList',
     },
+    detailExconfList: {
+      key: `${keys.supplyChainRelationship}/detail/exconf/list`,
+      function: 'SupplyChainRelationshipExconfList',
+    },
+    detail: {
+      key: `${keys.supplyChainRelationship}/detail`,
+      function: 'SupplyChainRelationshipDetail',
+    }
   },
   workCenter: {
     list: {
       key: `${keys.workCenter}/list`,
-      function: 'WorkCenterList',
+        function: 'WorkCenterList',
+    }
+  },
+  productionVersion: {
+    list: {
+      key: `${keys.productionVersion}/list`,
+      function: 'ProductionVersionList',
+    },
+    detailList: {
+      key: `${keys.productionVersion}/detail/list`,
+      function: 'ProductionVersionDetailList',
     },
   },
 };
