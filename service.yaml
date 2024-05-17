@@ -34,6 +34,14 @@ spec:
               value: "data-platform-api-request-reads-cache-manager-queue"
             - name: "TRANSACTIONS_STORAGE_PATH"
               value: "/inputs/orders/csv"
+            - name: "MONGO_DB_NAME"
+              value: "DataPlatform"
+            - name: "MONGO_DB_COLLECTION_NAME"
+              value: "RequestData"
+            - name: "MONGO_DB_ADDRESS"
+              value: "mongo-log"
+            - name: "MONGO_DB_PORT"
+              value: "27017"
           envFrom:
             - configMapRef:
                 name: env-config

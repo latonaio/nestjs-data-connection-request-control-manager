@@ -4,6 +4,7 @@ import {
   ExceptionFilter,
   Inject,
   BadRequestException,
+  NotFoundException,
 } from '@nestjs/common';
 import { Response } from 'express';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
@@ -56,6 +57,14 @@ export class CustomExceptionFilter implements ExceptionFilter {
     if (exception instanceof ApiProcessingResultException) {
       return response.status(statusCode).json({
         ...data,
+      });
+    }
+
+    if (exception instanceof NotFoundException) {
+      return response.status(400).json({
+        statusCode: 400,
+        name: exception.name,
+        message: exception.message,
       });
     }
 

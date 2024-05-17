@@ -7,12 +7,12 @@ WORKDIR /app
 COPY package*.json ./
 COPY prisma ./prisma/
 
+COPY . .
+
 # Install app dependencies
 RUN npm install
 
 RUN npm run prisma:generate:aws
-
-COPY . .
 
 RUN npm run build
 

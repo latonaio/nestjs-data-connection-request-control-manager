@@ -10,6 +10,12 @@ export default () => ({
     rmqQueueCache: process.env.RMQ_QUEUE_CACHE,
     createConnectionWaitTimeSecond: 10,
   },
+  mongodb: {
+    dbName:         process.env.MONGO_DB_NAME,
+    collectionName: process.env.MONGO_DB_COLLECTION_NAME,
+    address:        process.env.MONGO_DB_ADDRESS,
+    port:           process.env.MONGO_DB_PORT,
+  },
   receiveAsyncDataConsume: '',
   authenticator: {
     url: `http://${process.env.AUTHENTICATOR_HOST}:${process.env.AUTHENTICATOR_PORT}`,

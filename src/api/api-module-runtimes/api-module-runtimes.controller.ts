@@ -14,7 +14,7 @@ export class ApiModuleRuntimesController {
     @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
   ) {}
 
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   @Post(':aPIServiceName/:aPIType')
   async postApiModuleRuntimes(
     @RuntimeSessionId() runtimeSessionId: string,

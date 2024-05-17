@@ -9,6 +9,7 @@ import { OnEvent, EventEmitter2 } from '@nestjs/event-emitter';
 import { MessageTypes } from '@shared/enums/message-types';
 import { ApiModuleRuntimeException } from '@shared/filters/api-module-runtime-exception.filter';
 import { ApiProcessingResultException } from '@shared/filters/api-processing-result-error.filter';
+import { MongoClient, Db } from 'mongodb';
 
 @Injectable()
 export class RabbitmqService {
@@ -72,46 +73,43 @@ export class RabbitmqService {
   }
 
   async consume(runtimeSessionId: string, channel: Channel): Promise<Object> {
-    return new Promise(async (resolve, reject) => {
-      const { rmqQueueConsume } = this.configService.get('rmq');
-      const { requestTimeoutSecond } = this.configService.get('application');
-      let tmpQueueData;
-      let timerId;
+    try {
+      const {
+        dbName,
+        address,
+        port,
+        collectionName,
+      } = this.configService.get('mongodb');
 
-      await channel.consume(rmqQueueConsume, async (queueData) => {
-        tmpQueueData = queueData;
-        const parsedMessage: any = JSON.parse(queueData.content.toString());
+      const uri = `mongodb://${address}:${port}`;
+      const client = new MongoClient(uri);
+      await client.connect();
 
-        this.logger.debug(`Received Queue Message`, {
-          parsedMessageRuntimeSessionId: parsedMessage.runtime_session_id,
+      const database = client.db(dbName);
+      const collection = database.collection(collectionName);
+
+      let requestData;
+      do {
+        this.logger.info(`Search runtime session id: `, {
           runtimeSessionId,
         });
 
-        if (parsedMessage.runtime_session_id === runtimeSessionId) {
-          if (
-            parsedMessage.api_processing_result !== true || parsedMessage.sql_update_result === false
-          ) {
-            channel.ack(tmpQueueData);
-            await channel.close();
-            clearTimeout(timerId);
-            return reject(
-              new ApiProcessingResultException({ ...parsedMessage, runtimeSessionId }),
-            );
-          }
-
-          channel.ack(tmpQueueData);
-          await channel.close();
-          clearTimeout(timerId);
-          return resolve(parsedMessage)
+        requestData = await collection.findOne({ requestID: runtimeSessionId });
+        if (!requestData) {
+          this.logger.info(`Request runtime session id is not found`);
+          await new Promise(resolve => setTimeout(resolve, 1000));
         }
-      }, { noAck: false });
+      } while (!requestData);
 
-      timerId = setTimeout(async () => {
-        await channel.close();
-        return reject(
-          new RuntimeSessionException(`Request timeout`, { runtimeSessionId })
-        );
-      }, 1000 * requestTimeoutSecond);
-    });
+      await client.close();
+
+      this.logger.info(`Request runtime session id is found`, { requestID: runtimeSessionId });
+
+      return requestData;
+    } catch (error) {
+      // エラーハンドリング
+      this.logger.error(`Error in consume function: ${error.message}`);
+      throw error;
+    }
   }
 }

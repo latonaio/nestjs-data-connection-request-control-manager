@@ -26,6 +26,8 @@ export class JwtAuthGuard implements CanActivate {
     const { url } = this.configService.get('authenticator');
 
     try {
+      // todo token の有効期限が切れてから redis の cache が削除されるまでの時間が有効になってしまうので後で検討する
+      // そもそも browser 側でも1時間で token を削除するため処理が必要か要検討
       if (await this.redisService.getTokenCacheSync(jwtToken)) {
         return true;
       }
